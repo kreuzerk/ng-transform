@@ -1,4 +1,4 @@
-import {booleanAttribute, ChangeDetectionStrategy, Component, Input, numberAttribute} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, numberAttribute, booleanAttribute } from "@angular/core";
 import {NgIf} from "@angular/common";
 
 export interface Character {
