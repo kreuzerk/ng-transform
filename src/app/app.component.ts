@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ng-transform';
+  luffy = {
+    name: 'Monkey D. Luffy',
+    devilsFruit: 'Gomu Gomu no Mi',
+    crew: 'Straw Hat Pirates'
+  }
 }
