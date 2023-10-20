@@ -1,8 +1,9 @@
 import {
-  addImports,
-  createProject, editImports,
+  createProject,
+  editImports,
   getClasses,
-  getDecorators, getImports,
+  getDecorators,
+  getImports,
   getProperties,
   NgMorphTree,
   saveActiveProject,
@@ -30,10 +31,11 @@ classes.forEach(c => {
       && decoratorName === 'Input'
       && !includesTransform(decorator)
     ) {
-      // TODO: handle existing imports and transforms -> make it more robust if run twice
-      // TODO: extract code and provide as library
+
       const enrichedDecorators = enrichDecorator(decorator);
-      decorator.removeArgument(0);
+      if (decorator.getArguments().length !== 0) {
+        decorator.removeArgument(0);
+      }
       decorator.addArgument(enrichedDecorators);
 
       const angularCoreImports = getImports(p.getSourceFile().getFilePath(), {
@@ -44,7 +46,7 @@ classes.forEach(c => {
       const match = angularCoreImports.getText().match('\\{([^}]+)\\}')[1];
       const namedImports = match.split(',').map(s => s.trim());
 
-      if(!namedImports.includes('booleanAttribute')){
+      if (!namedImports.includes('booleanAttribute')) {
         editImports(angularCoreImports, () => ({
           namedImports: [...namedImports, 'booleanAttribute']
         }));
@@ -54,11 +56,15 @@ classes.forEach(c => {
 });
 
 function includesTransform(decorator) {
-  return decorator?.getArguments()[0].getText().includes('transform:');
+  return decorator?.getArguments()[0]?.getText()?.includes('transform:');
 }
 
 function enrichDecorator(decorator) {
-  return decorator.getArguments()[0].getText().replace('}', `, ${DECORATOR_ARGUMENT}}`);
+  const decoratorArguments = decorator.getArguments();
+  if (decoratorArguments.length === 0) {
+    return `{${DECORATOR_ARGUMENT}}`;
+  }
+  return decoratorArguments[0]?.getText()?.replace('}', `, ${DECORATOR_ARGUMENT}}`);
 }
 
 saveActiveProject();
